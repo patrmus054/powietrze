@@ -1,18 +1,24 @@
 package com.example.recyclerview
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.powietrze_gios.R
+import com.example.powietrze_gios.activity.MainActivity
+import com.example.powietrze_gios.activity.SensorActivity
 import com.example.powietrze_gios.model.Model
 import kotlinx.android.synthetic.main.list_view.view.*
-import java.util.ArrayList
+import java.security.AccessController.getContext
 
-class MainAdapter(val airs: List<Model.StationName>, val listener: (Model.StationName) -> Unit) : RecyclerView.Adapter<MainAdapter.MainViewHolder>(){
+
+class MainAdapter(val airs: List<Model.Result>, val listener: (Model.Result) -> Unit) : RecyclerView.Adapter<MainAdapter.MainViewHolder>(){
 
     class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun bind(station: Model.StationName, listener: (Model.StationName) -> Unit) = with(itemView){
+        fun bind(station: Model.Result, listener: (Model.Result) -> Unit) = with(itemView){
             tv_title.text = station.name
             tv_points.text = "99"
         }
@@ -30,17 +36,13 @@ class MainAdapter(val airs: List<Model.StationName>, val listener: (Model.Statio
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         holder.bind(airs.get(position), listener)
-//        val airTitle = airs.get(position).name
-//        holder.view.tv_count.text = "$position "
-//        holder.view.tv_title.text = "$airTitle "
-//        holder.view.tv_points.text = "100"
+        holder.itemView.setOnClickListener{
+            Log.i("sasa", "MainAdaper: ${airs.get(position)}")
+            val intent = Intent(holder.itemView.context, SensorActivity::class.java)
+            intent.putExtra("MAIN_ID", airs.get(position).id)
+            holder.itemView.context.startActivity(intent)
 
-//        holder.itemView.setOnClickListener{
-//            val item = taskList[position]
-//            val intent = Intent(holder.itemView.context, UpdateTaskActivity::class.java)
-//            intent.putExtra(MainActivity.TASK_ID, item.id)
-//            holder.itemView.context.startActivity(intent)
-//        }
+        }
     }
 
 }

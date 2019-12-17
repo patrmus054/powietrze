@@ -1,34 +1,19 @@
 package com.example.powietrze_gios.network
 
 import com.example.powietrze_gios.model.Model
+import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
-import java.util.*
-import kotlin.collections.ArrayList
+import retrofit2.http.Path
+
 
 interface ApiService {
-//   @GET("station/findAll")
-//    fun hitCountCheck(@Query("stationName") name: String): Call<ArrayList<Model.StationName>>
-//
-//    companion object {
-//        fun create(): ApiService {
-//
-//            val retrofit = Retrofit.Builder()
-//                .addCallAdapterFactory(
-//                    RxJava2CallAdapterFactory.create())
-//                .addConverterFactory(
-//                    GsonConverterFactory.create())
-//                .baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
-//                .build()
-//
-//            return retrofit.create(ApiService::class.java)
-//        }
-//    }
-
     @GET("station/findAll")
-    fun fetchAllUsers(): Call<List<Model.StationName>>
+    fun fetchAllStations(): Call<List<Model.Result>>
+
+//    @GET("station/sensors/${stationId}")
+//    fun getStationID(var stationId: Int): Call<List<Model.id>>
+    @GET("station/sensors/{id}")
+    fun fetchAllSensors(@Path("id") id: Int): Call<List<Model.Sensors>>
+
 }

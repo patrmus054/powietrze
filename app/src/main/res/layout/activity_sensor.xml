@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle"
+        android:id="@+id/recycle_sensors"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="1pt"

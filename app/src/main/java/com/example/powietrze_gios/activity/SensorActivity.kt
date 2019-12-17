@@ -1,12 +1,13 @@
 package com.example.powietrze_gios.activity
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.powietrze_gios.R
+import com.example.powietrze_gios.adapter.SensorAdapter
 import com.example.powietrze_gios.model.Model
 import com.example.powietrze_gios.network.ApiService
 import com.example.recyclerview.MainAdapter
@@ -16,17 +17,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity() {
+class SensorActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private lateinit var viewAdapter: MainAdapter
+    private lateinit var viewAdapter: SensorAdapter
 
-     var airs: List<Model.Result> = emptyList()
+    var sensors: List<Model.Sensors> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+        setContentView(R.layout.activity_sensor)
 
         val retrofit = Retrofit.Builder().baseUrl("http://api.gios.gov.pl/pjp-api/rest/")
             .addConverterFactory(GsonConverterFactory.create()).build()
@@ -34,22 +35,25 @@ class MainActivity : AppCompatActivity() {
         val api = retrofit.create(ApiService::class.java)
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = MainAdapter(airs){
-            Toast.makeText(this, "${it.name} Clicked", Toast.LENGTH_SHORT).show()
+        viewAdapter = SensorAdapter(sensors){
+            Toast.makeText(this, "${it.id} Clicked", Toast.LENGTH_SHORT).show()
         }
-        recyclerView = findViewById<RecyclerView>(R.id.recycle) as RecyclerView
+        recyclerView = findViewById<RecyclerView>(R.id.recycle_sensors) as RecyclerView
         recyclerView.layoutManager = viewManager
         recyclerView.adapter = viewAdapter
 
-        api.fetchAllStations().enqueue(object : Callback<List<Model.Result>>{
-            override fun onFailure(call: Call<List<Model.Result>>, t: Throwable) {
+        val sensorId = intent.getIntExtra("MAIN_ID", -1)
+
+
+        api.fetchAllSensors(sensorId).enqueue(object : Callback<List<Model.Sensors>> {
+            override fun onFailure(call: Call<List<Model.Sensors>>, t: Throwable) {
                 Log.e("dupa", "onFailure: ${t.message}")
             }
 
-            override fun onResponse(call: Call<List<Model.Result>>, response: Response<List<Model.Result>>) {
-                Log.i("dupa", "onResponse: ${response.body()!![0].name}")
-                airs = response.body()!!
-                viewAdapter = MainAdapter(airs){
+            override fun onResponse(call: Call<List<Model.Sensors>>, response: Response<List<Model.Sensors>>) {
+                Log.i("dupa", "onResponse: ${response.body()!![0].id}")
+                sensors = response.body()!!
+                viewAdapter = SensorAdapter(sensors){
                 }
                 recyclerView.adapter = viewAdapter
             }
